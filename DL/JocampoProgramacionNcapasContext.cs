@@ -26,6 +26,7 @@ public partial class JocampoProgramacionNcapasContext : DbContext
     public virtual DbSet<Rol> Rols { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
+    public virtual DbSet<DTOUsuarioGetAll> Usuario { get; set; }
 
     public virtual DbSet<UsuarioGetAllView> UsuarioGetAllViews { get; set; }
 
@@ -169,7 +170,12 @@ public partial class JocampoProgramacionNcapasContext : DbContext
                 .HasConstraintName("FK_rol");
         });
 
-        modelBuilder.Entity<UsuarioGetAllView>(entity =>
+        modelBuilder.Entity<DTOUsuarioGetAll>(entity =>
+        {
+            entity.HasNoKey();
+        });
+
+            modelBuilder.Entity<UsuarioGetAllView>(entity =>
         {
             entity
                 .HasNoKey()
