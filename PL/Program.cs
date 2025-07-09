@@ -13,6 +13,7 @@ builder.Services.AddDbContext<JocampoProgramacionNcapasContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Proyecto")));
 
 builder.Services.AddScoped<BL.Usuario>();
+builder.Services.AddScoped<BL.Rol>();
 
 var app = builder.Build();
 
