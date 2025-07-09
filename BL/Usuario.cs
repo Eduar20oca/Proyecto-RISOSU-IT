@@ -21,7 +21,7 @@ namespace BL
             try
             {
 
-                var query = _context.Usuario.FromSqlRaw($"UsuarioGetAll '{usuario.Nombre}','{usuario.ApellidoPaterno}', '{usuario.ApellidoMaterno}', '{usuario.Rol.IdRol}'").ToList();
+                var query = _context.UsuarioGetAllDTO.FromSqlRaw($"UsuarioGetAll '{usuario.Nombre}','{usuario.ApellidoPaterno}', '{usuario.ApellidoMaterno}', '{usuario.Rol.IdRol}'").ToList();
 
                 if (query.Count > 0)
                 {
@@ -51,8 +51,8 @@ namespace BL
                         usuario1.Rol.Descripcion = usuarioL.Descripcion;
                         usuario1.Estatus = usuarioL.Estatus;
                         usuario1.Direccion.Calle = usuarioL.Calle;
-                        usuario1.Direccion.NumeroInterior = Convert.ToInt32(usuarioL.NumeroInterior);
-                        usuario1.Direccion.NumeroExterior = Convert.ToInt32(usuarioL.NumeroExterior);
+                        usuario1.Direccion.NumeroInterior = usuarioL.NumeroInterior;
+                        usuario1.Direccion.NumeroExterior = usuarioL.NumeroExterior;
                         usuario1.Direccion.Colonia.Nombre = usuarioL.NombreColonia;
                         usuario1.Direccion.Colonia.Municipio.Nombre = usuarioL.NombreMunicipio;
                         usuario1.Direccion.Colonia.Municipio.Estado.Nombre = usuarioL.NombreEstado;

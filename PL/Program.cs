@@ -10,7 +10,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<JocampoProgramacionNcapasContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Restaurantes")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Proyecto")));
 
 builder.Services.AddScoped<BL.Usuario>();
 

@@ -10,19 +10,19 @@ namespace DL
     {
         public int IdUsuario { get; set; }
         public string? Nombre { get; set; }
-        public string? ApellidoPaterno { get; set; } = null!;
+        public string? ApellidoPaterno { get; set; }
 
-        public string? UserName { get; set; } = null!;
+        public string? UserName { get; set; } 
 
-        public string? ApellidoMaterno { get; set; } = null!;
+        public string? ApellidoMaterno { get; set; } 
 
-        public string? Email { get; set; } = null!;
+        public string? Email { get; set; } 
 
-        public string? Password { get; set; } = null!;
+        public string? Password { get; set; } 
 
-        public string? Sexo { get; set; } = null!;
+        public string? Sexo { get; set; } 
 
-        public string? Telefono { get; set; } = null!;
+        public string? Telefono { get; set; } 
 
         public string? Celular { get; set; }
 
