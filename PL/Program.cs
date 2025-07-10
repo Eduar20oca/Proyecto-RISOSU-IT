@@ -14,6 +14,7 @@ builder.Services.AddDbContext<JocampoProgramacionNcapasContext>(options =>
 
 builder.Services.AddScoped<BL.Usuario>();
 builder.Services.AddScoped<BL.Rol>();
+builder.Services.AddScoped<BL.Estado>();
 
 var app = builder.Build();
 

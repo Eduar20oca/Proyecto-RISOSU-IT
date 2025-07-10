@@ -199,7 +199,7 @@ namespace BL
             return result;
         }
 
-        public ML.Result GetByIdSPEF(int IdUsuario)
+        public ML.Result GetByIdSPEF(int? IdUsuario)
         {
 
             ML.Result Result = new ML.Result();
