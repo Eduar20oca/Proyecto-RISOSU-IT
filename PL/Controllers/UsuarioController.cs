@@ -10,7 +10,7 @@ namespace PL.Controllers
         private readonly BL.Municipio _municipio;
         private readonly BL.Colonia _colonia;
 
-        public UsuarioController(BL.Usuario usuario, BL.Rol rol, BL.Estado estado, BL.Municipio municipio , BL.Colonia colonia)
+        public UsuarioController(BL.Usuario usuario, BL.Rol rol, BL.Estado estado, BL.Municipio municipio, BL.Colonia colonia)
         {
             _usuario = usuario;
             _rol = rol;
@@ -65,7 +65,7 @@ namespace PL.Controllers
 
             return View(Usuario);
         }
-                
+
         [HttpGet]
         public ActionResult Form(int? IdUsuario)
         {
@@ -111,10 +111,82 @@ namespace PL.Controllers
                     usuario.Direccion.Colonia.Colonias = resultColonia.Objects;
                 }
 
-
             }
             return View(usuario);
         }
 
+        [HttpPost]
+        public ActionResult Form(ML.Usuario usuario, IFormFile ArchivoImagen)
+        {
+
+
+            if (ModelState.IsValid)
+            {
+                //HttpPostedFileBase imagenValida = Request.Files["ArchivoImagen"];
+                //if (ArchivoImagen != null)
+                //{
+                //    using (var ms = new MemoryStream())
+                //    {
+                //        //copia el archivo a un memory stream (ms)
+                //        ArchivoImagen.InputStream.CopyTo(ms);
+                //        //convierte el memorystream un arreglo de bytes y asignamos el arreglo a la propiedad imagen
+                //        usuario.Imagen = ms.ToArray();
+                //    }
+                //}
+
+                if (usuario.IdUsuario > 0)
+                {
+                    _usuario.UpdateSPEF(usuario);
+                }
+                else
+                {
+                    _usuario.AddSPEF(usuario);
+                }
+            }
+
+            return RedirectToAction("GetAll");
+
+        }
+
+        [HttpGet]
+        public ActionResult Delete(int IdUsuario)
+        {
+
+            _usuario.DeleteSPEF(IdUsuario);
+
+            return RedirectToAction("GetALL");
+        }
+
+        [HttpGet]
+        public JsonResult GetByIdEstado(int IdEstado)
+        {
+            ML.Result ResultMunicipios = _municipio.GetMunicipioByIdEstado(IdEstado);
+
+            return Json(ResultMunicipios);
+        }
+
+        [HttpGet]
+        public JsonResult GetByIdMunicipio(int? IdMunicipio)
+        {
+            if (IdMunicipio == null)
+            {
+                int IdMunicipioNull = 0;
+                ML.Result ResultColonias = _colonia.GetByIdMunicipio(IdMunicipioNull);
+                return Json(ResultColonias);
+            }
+            else
+            {
+                ML.Result ResultColonias = _colonia.GetByIdMunicipio(IdMunicipio);
+                return Json(ResultColonias);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UpdateEstatus(int IdUsuario, bool Estatus)
+        {
+            ML.Result resultUpdateEstatus = _usuario.UpdateEstatus(IdUsuario, Estatus);
+
+            return Json(resultUpdateEstatus);
+        }
     }
 }

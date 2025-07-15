@@ -10,7 +10,7 @@ namespace ML
     public class Municipio
     {
         [Key]
-        public int? IdMunicipio { get; set; }
+        public int IdMunicipio { get; set; }
         public String Nombre { get; set; }
         public ML.Estado Estado { get; set; }
         public List<object> Municipios { get; set; }
