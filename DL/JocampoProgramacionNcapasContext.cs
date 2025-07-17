@@ -29,6 +29,8 @@ public partial class JocampoProgramacionNcapasContext : DbContext
 
     public virtual DbSet<DTOUsuarioGetAll> UsuarioGetAllDTO { get; set; }
     public virtual DbSet<UsuarioGetByIDDTO> UsuarioGetByIDDTO { get; set; }
+    public virtual DbSet<GetByIdEstadoDTO> GetByIdEstadoDTO { get; set; }
+    public virtual DbSet<GetByIdMunicipioDTO> GetByIdMunicipioDTO { get; set; }
 
     public virtual DbSet<UsuarioGetAllView> UsuarioGetAllViews { get; set; }
 
@@ -179,6 +181,18 @@ public partial class JocampoProgramacionNcapasContext : DbContext
         });
 
         modelBuilder.Entity<UsuarioGetByIDDTO>(entity =>
+        {
+            entity.HasNoKey();
+
+        });
+
+        modelBuilder.Entity<GetByIdEstadoDTO>(entity =>
+        {
+            entity.HasNoKey();
+
+        });
+
+        modelBuilder.Entity<GetByIdMunicipioDTO>(entity =>
         {
             entity.HasNoKey();
 

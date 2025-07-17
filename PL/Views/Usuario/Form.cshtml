@@ -256,17 +256,17 @@
 
             url: '@Url.Action("GetByIdEstado", "Usuario")',
             dataType: 'JSON',
-            //method: 'GET',
+            method: 'GET',
             data: { IdEstado },
             success: function (ResultMunicipios) {
 
-                if (ResultMunicipios.Correct) {
+                if (ResultMunicipios.correct) {
                     $('#ddlMunicipio').empty()
                     $('#ddlMunicipio').append('<option value ="">Selecciona un Municipio</option>')
 
 
-                    $.each(ResultMunicipios.Objects, function (i, municipio) {
-                        $('#ddlMunicipio').append('<option value="' + municipio.IdMunicipio + '">' + municipio.Nombre + '</option>')
+                    $.each(ResultMunicipios.objects, function (i, municipio) {
+                        $('#ddlMunicipio').append('<option value="' + municipio.idMunicipio + '">' + municipio.nombre + '</option>')
                     })
                 }
             },
@@ -287,12 +287,12 @@
             data: { IdMunicipio },
             success: function (ResultColonias) {
 
-                if (ResultColonias.Correct) {
+                if (ResultColonias.correct) {
                     $('#ddlColonia').empty()
                     $('#ddlColonia').append('<option value ="">Selecciona una Colonia</option>')
 
-                    $.each(ResultColonias.Objects, function (i, colonia) {
-                        $('#ddlColonia').append('<option value="' + colonia.IdColonia + '">' + colonia.Nombre + '</option>')
+                    $.each(ResultColonias.objects, function (i, colonia) {
+                        $('#ddlColonia').append('<option value="' + colonia.idColonia + '">' + colonia.nombre + '</option>')
                     })
                 }
             },

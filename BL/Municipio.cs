@@ -23,7 +23,7 @@ namespace BL
 
             try
             {
-                var query = _context.Municipios.FromSqlRaw($"ColoniaGetByIdMunicipio , {IdEstado}").ToList();
+                var query = _context.GetByIdEstadoDTO.FromSqlRaw($"MunicipioByIdEstado '{IdEstado}'").ToList();
 
                 if(query.Count > 0)
                 {
