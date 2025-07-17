@@ -135,7 +135,7 @@
                     }
                     else
                     {
-                        <img src="~/Content/Images/user.jpg" id="ImgInput" style="width:100px" />
+                        <img src="~/Image/user.jpg" id="ImgInput" style="width:100px" />
                     }
                 </div>
 
@@ -206,87 +206,80 @@
 }
 
 
-
-<script src="~/Scripts/jquery-3.7.0.min.js"></script>
-<script src="~/Scripts/jquery-ui.min.js"></script>
-<script src="~/Scripts/jquery-ui.js"></script>
-
 <script>
 
-        var CargarImage = function (input) {
-            var img = input.target.files[0]
+    var CargarImage = function (input) {
+        var img = input.target.files[0]
 
-            var ImgName = img.name;
+        var ImgName = img.name;
 
-            if (Validar(ImgName)) {
-                alert("Imagen Cargada Correctamente")
-            }
-            else {
-                return null
-            }
-
-            var reader = new FileReader()
-            reader.onload = function () {
-                var output = $('#ImgInput')[0]
-                console.log(output)
-                output.src = reader.result
-            }
-            reader.readAsDataURL(img)
+        if (Validar(ImgName)) {
+            alert("Imagen Cargada Correctamente")
+        }
+        else {
+            return null
         }
 
+        var reader = new FileReader()
+        reader.onload = function () {
+            var output = $('#ImgInput')[0]
+            console.log(output)
+            output.src = reader.result
+        }
+        reader.readAsDataURL(img)
+    }
 
-        function Validar(imgName) {
 
-            let extensions = ["png", "jpg", "jpeg"];
+    function Validar(imgName) {
 
-            if (imgName == null) {
-                alert("No se Subio el Archivo");
-                return false;
-            }
+        let extensions = ["png", "jpg", "jpeg"];
 
-            let imgExtension = imgName.split('.').pop().toLowerCase();
-
-            if (!extensions.includes(imgExtension)) {
-                alert("No es una Extension Valida")
-                return false;
-            }
-            return true;
+        if (imgName == null) {
+            alert("No se Subio el Archivo");
+            return false;
         }
 
-        function FillMunicipios()
-        {
-            var IdEstado = $('#ddlEstado').val();
+        let imgExtension = imgName.split('.').pop().toLowerCase();
+
+        if (!extensions.includes(imgExtension)) {
+            alert("No es una Extension Valida")
+            return false;
+        }
+        return true; 
+    }
+
+    function FillMunicipios() {
+        var IdEstado = $('#ddlEstado').val();
 
 
-            $.ajax({
+        $.ajax({
 
-                url: '@Url.Action("GetByIdEstado", "Usuario")',
-                dataType: 'JSON',
-                //method: 'GET',
-                data: { IdEstado },
-                success: function (ResultMunicipios) {
+            url: '@Url.Action("GetByIdEstado", "Usuario")',
+            dataType: 'JSON',
+            //method: 'GET',
+            data: { IdEstado },
+            success: function (ResultMunicipios) {
 
-                    if (ResultMunicipios.Correct) {
-                        $('#ddlMunicipio').empty()
-                        $('#ddlMunicipio').append('<option value ="">Selecciona un Municipio</option>')
+                if (ResultMunicipios.Correct) {
+                    $('#ddlMunicipio').empty()
+                    $('#ddlMunicipio').append('<option value ="">Selecciona un Municipio</option>')
 
 
-                        $.each(ResultMunicipios.Objects, function (i, municipio) {
-                            $('#ddlMunicipio').append('<option value="' + municipio.IdMunicipio + '">' + municipio.Nombre + '</option>')
-                        })
-                    }
-                },
-                error: function (ex) {
-                    alert("Error")
+                    $.each(ResultMunicipios.Objects, function (i, municipio) {
+                        $('#ddlMunicipio').append('<option value="' + municipio.IdMunicipio + '">' + municipio.Nombre + '</option>')
+                    })
                 }
-             })
-        }
+            },
+            error: function (ex) {
+                alert("Error")
+            }
+        })
+    }
 
-        function FillColonias()
-    {
+    function FillColonias() {
         var IdMunicipio = $('#ddlMunicipio').val();
 
-         $.ajax({
+        $.ajax({
 
             url: '@Url.Action("GetByIdMunicipio", "Usuario")',
             dataType: 'JSON',
@@ -299,7 +292,8 @@
                     $('#ddlColonia').append('<option value ="">Selecciona una Colonia</option>')
 
                     $.each(ResultColonias.Objects, function (i, colonia) {
-                        $('#ddlColonia').append('<option value="' + colonia.IdColonia + '">' + colonia.Nombre + '</option>')})
+                        $('#ddlColonia').append('<option value="' + colonia.IdColonia + '">' + colonia.Nombre + '</option>')
+                    })
                 }
             },
             error: function (ex) {
@@ -308,51 +302,44 @@
         })
     }
 
-            $("#datepicker").datepicker({
-                inline: true,
-                maxDate: 0,
-                dateFormat: "mm/dd/yy",
-                changeMonth: true,
-                changeYear: true,
-                yearRange: '1999:2012'
-            });
+
 
     function ValidarEmail() {
 
-            const input = document.getElementById("emailInput");
-            const value = input.value;
-            console.log(input);
+        const input = document.getElementById("emailInput");
+        const value = input.value;
+        console.log(input);
 
-            const regex = new RegExp ("^[^@@\\s]+@@[^@@\\s]+\\.[^@@\\s]+$");
+        const regex = new RegExp("^[^@@\\s]+@@[^@@\\s]+\\.[^@@\\s]+$");
 
-            if (regex.test(value)) {
-                input.classList.remove("is-invalid");
-                input.classList.add("is-valid");
-            } else {
-                input.classList.remove("is-valid");
-                input.classList.add("is-invalid");
+        if (regex.test(value)) {
+            input.classList.remove("is-invalid");
+            input.classList.add("is-valid");
+        } else {
+            input.classList.remove("is-valid");
+            input.classList.add("is-invalid");
 
-            }
+        }
     }
 
     function ValidarLetras(input, event) {
-            var letra = event.key;
-            console.log(letra);
+        var letra = event.key;
+        console.log(letra);
 
-            const IdInput = $(input).attr("id");
+        const IdInput = $(input).attr("id");
 
-            const regex = new RegExp("[a-zA-Z]+$");
+        const regex = new RegExp("[a-zA-Z]+$");
 
-            if (regex.test(letra)) {
-                input.classList.remove("is-invalid");
-                input.classList.add("is-valid");
+        if (regex.test(letra)) {
+            input.classList.remove("is-invalid");
+            input.classList.add("is-valid");
 
-            } else {
-                event.preventDefault();
-                input.classList.remove("is-valid");
-                input.classList.add("is-invalid");
-                $("." + IdInput).text("Solo se permiten letras");
-            }
+        } else {
+            event.preventDefault();
+            input.classList.remove("is-valid");
+            input.classList.add("is-invalid");
+            $("." + IdInput).text("Solo se permiten letras");
+        }
     }
 
     function ValidarLetrasASCII(input, event) {
@@ -389,20 +376,20 @@
 
         var numero = event.key;
 
-            const IdInput = $(input).attr("id");
+        const IdInput = $(input).attr("id");
 
-            const regex = new RegExp("^[0-9]+$");
+        const regex = new RegExp("^[0-9]+$");
 
-            if (regex.test(numero)) {
-                input.classList.remove("is-invalid");
-                input.classList.add("is-valid");
+        if (regex.test(numero)) {
+            input.classList.remove("is-invalid");
+            input.classList.add("is-valid");
 
-            } else {
-                event.preventDefault();
-                input.classList.remove("is-valid");
-                input.classList.add("is-invalid");
-                $("." + IdInput).text("Solo se permiten numeros");
-            }
+        } else {
+            event.preventDefault();
+            input.classList.remove("is-valid");
+            input.classList.add("is-invalid");
+            $("." + IdInput).text("Solo se permiten numeros");
+        }
     }
 
     function ValidarNumerosASCII(input, event) {
@@ -452,18 +439,18 @@
     }
 
     function ValidarFechaOnBlur(input) {
-            var value = $(input).val();
-            console.log(value);
+        var value = $(input).val();
+        console.log(value);
 
         var regex = new RegExp("^[0-9/]+$");
 
-            if (regex.test(value)) {
-                input.classList.remove("is-invalid");
-                input.classList.add("is-valid");
-            } else {
-                input.classList.remove("is-valid");
-                input.classList.add("is-invalid");
-            }
+        if (regex.test(value)) {
+            input.classList.remove("is-invalid");
+            input.classList.add("is-valid");
+        } else {
+            input.classList.remove("is-valid");
+            input.classList.add("is-invalid");
+        }
     }
 
     function ValidarUserName(input) {
@@ -523,19 +510,32 @@
         var contraseña1 = $("#emailInput").val();
         var contraseña2 = $(input).val();
 
-            const IdInput = $(input).attr("id");
+        const IdInput = $(input).attr("id");
 
-            if (contraseña1 == contraseña2) {
-                input.classList.remove("is-invalid");
-                input.classList.add("is-valid");
-            } else {
-                input.classList.remove("is-valid");
-                input.classList.add("is-invalid");
-                $("." + IdInput).text("Los emails no coinciden");
-            }
+        if (contraseña1 == contraseña2) {
+            input.classList.remove("is-invalid");
+            input.classList.add("is-valid");
+        } else {
+            input.classList.remove("is-valid");
+            input.classList.add("is-invalid");
+            $("." + IdInput).text("Los emails no coinciden");
+        }
 
     }
 </script>
+
+@section Scripts{
+    <script>
+            $("#datepicker").datepicker({
+            inline: true,
+            maxDate: 0,
+            dateFormat: "mm/dd/yy",
+            changeMonth: true,
+            changeYear: true,
+            yearRange: '1999:2012'
+            });    
+    </script>
+}
 
 <script>
     (() => {

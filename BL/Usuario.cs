@@ -15,7 +15,7 @@ namespace BL
 
         public ML.Result GetAllSPEF(ML.Usuario usuario)
         {
-            usuario.Rol = new ML.Rol();
+            
             ML.Result result = new ML.Result();
 
             try

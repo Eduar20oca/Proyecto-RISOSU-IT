@@ -44,8 +44,7 @@ namespace PL.Controllers
         [HttpPost]
         public IActionResult GetAll(ML.Usuario Usuario)
         {
-            Usuario.Rol = new ML.Rol();
-
+            
             Usuario.Nombre = Usuario.Nombre ?? "";
             Usuario.ApellidoPaterno = Usuario.ApellidoPaterno ?? "";
             Usuario.ApellidoMaterno = Usuario.ApellidoMaterno ?? "";
@@ -176,7 +175,7 @@ namespace PL.Controllers
             }
             else
             {
-                ML.Result ResultColonias = _colonia.GetByIdMunicipio(IdMunicipio);
+                ML.Result ResultColonias = _colonia.GetByIdMunicipio(IdMunicipio ?? 0);
                 return Json(ResultColonias);
             }
         }
