@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 namespace PL.Controllers
 {
@@ -24,7 +26,8 @@ namespace PL.Controllers
         {
             ML.Usuario usuario = new ML.Usuario();
             usuario.Rol = new ML.Rol();
-            ML.Result result = _usuario.GetAllSPEF(usuario);
+            //ML.Result result = _usuario.GetAllSPEF(usuario);
+            ML.Result result = GetAllREST();
 
             if (result.Correct)
             {
@@ -44,7 +47,7 @@ namespace PL.Controllers
         [HttpPost]
         public IActionResult GetAll(ML.Usuario Usuario)
         {
-            
+
             Usuario.Nombre = Usuario.Nombre ?? "";
             Usuario.ApellidoPaterno = Usuario.ApellidoPaterno ?? "";
             Usuario.ApellidoMaterno = Usuario.ApellidoMaterno ?? "";
@@ -92,7 +95,7 @@ namespace PL.Controllers
             if (IdUsuario > 0)
             {
 
-                ML.Result resultUsuario = _usuario.GetByIdSPEF(IdUsuario);
+                ML.Result resultUsuario = GetByIdREST(IdUsuario);
                 usuario = (ML.Usuario)resultUsuario.Object;
 
                 if (usuario != null)
@@ -135,11 +138,11 @@ namespace PL.Controllers
 
                 if (usuario.IdUsuario > 0)
                 {
-                    _usuario.UpdateSPEF(usuario);
+                    UpdateREST(usuario);
                 }
                 else
                 {
-                    _usuario.AddSPEF(usuario);
+                    AddREST(usuario);
                 }
             }
 
@@ -151,7 +154,7 @@ namespace PL.Controllers
         public ActionResult Delete(int IdUsuario)
         {
 
-            _usuario.DeleteSPEF(IdUsuario);
+            DeleteREST(IdUsuario);
 
             return RedirectToAction("GetALL");
         }
@@ -187,5 +190,180 @@ namespace PL.Controllers
 
             return Json(resultUpdateEstatus);
         }
+
+        [NonAction]
+        public ML.Result AddREST(ML.Usuario usuario)
+        {
+            ML.Result result = new ML.Result();
+
+            using (var client = new HttpClient())
+            {
+                string endPoint = "http://localhost:5080/Add";
+                client.BaseAddress = new Uri(endPoint);
+
+                var postTask = client.PostAsJsonAsync<ML.Usuario>("Add", usuario);
+                postTask.Wait();
+
+                var respuesta = postTask.Result;
+
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    var readTask = respuesta.Content.ReadAsAsync<ML.Result>();
+                    readTask.Wait();
+                    result = readTask.Result;
+                }
+                else
+                {
+                    result.Correct = false;
+                    result.ErrorMessage = "Error al agregar usuario: ";
+                }
+            }
+
+            return result;
+
+        }
+
+        [NonAction]
+        public ML.Result GetAllREST()
+        {
+            ML.Result result = new ML.Result();
+
+            using (var client = new HttpClient())
+            {
+                string uri = "http://localhost:5080/GetAll";
+
+                client.BaseAddress = new Uri(uri);
+
+                var responseTask = client.GetAsync("GetAll");
+                responseTask.Wait();
+
+                var resultado = responseTask.Result;
+
+                if (resultado.IsSuccessStatusCode)
+                {
+                    var readTask = resultado.Content.ReadAsAsync<ML.Result>();
+                    result.Objects = new List<object>();
+                    
+                    foreach (var item in readTask.Result.Objects)
+                    {
+                        ML.Usuario usuarioitem = Newtonsoft.Json.JsonConvert.DeserializeObject<ML.Usuario>(item.ToString());
+
+                        result.Objects.Add(usuarioitem);
+                    }
+
+                    result.Correct = true;
+                }
+                else
+                {
+                    result.Correct = false;
+                }
+
+            }
+            return result;
+        }
+
+        [NonAction]
+        public ML.Result DeleteREST(int IdUsuario)
+        {
+
+            ML.Result result = new ML.Result();
+
+            using (var client = new HttpClient())
+            {
+                string uri = "http://localhost:5080/Delete/{IdUsuario}";
+
+                client.BaseAddress = new Uri(uri);
+
+                var postTask = client.DeleteAsync($"Delete/{IdUsuario}");
+                postTask.Wait();
+
+                var resultado = postTask.Result;
+
+                if (resultado.IsSuccessStatusCode)
+                {
+
+                    var readTask = resultado.Content.ReadAsAsync<ML.Result>();
+                    readTask.Wait();
+                    result = readTask.Result;
+                }
+                else
+                {
+                    result.Correct = false;
+                    result.ErrorMessage = "Error al Eliminar Usuario";
+                }
+
+                return result;
+            }
+        }
+
+        [NonAction]
+        public ML.Result UpdateREST(ML.Usuario usuario)
+        {
+            ML.Result result = new ML.Result();
+
+            using (var client = new HttpClient())
+            {
+
+                string uri = "http://localhost:5080/Update/{IdUsuario}";
+                client.BaseAddress = new Uri(uri);
+
+                var putTask = client.PutAsJsonAsync($"Update/{usuario.IdUsuario}", usuario);
+
+                var respuesta = putTask.Result;
+
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    var readTask = respuesta.Content.ReadAsAsync<ML.Result>();
+                    readTask.Wait();
+                    result = readTask.Result;
+
+                }
+                else
+                {
+                    result.Correct = false;
+                    result.ErrorMessage = "Error al Actualizar al usuario";
+                }
+
+            }
+
+            return result;
+        }
+
+        [NonAction]
+        private ML.Result GetByIdREST(int? IdUsuario) 
+        {
+            ML.Result result = new ML.Result();
+
+            using (var client = new HttpClient())
+            {
+                string uri = "http://localhost:5080/GetById/{IdUsuario}";
+
+                client.BaseAddress = new Uri(uri);
+
+                var responseTask = client.GetAsync($"GetById/{IdUsuario}");
+                responseTask.Wait();
+
+                var respuesta = responseTask.Result;
+
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    var readTask = respuesta.Content.ReadAsAsync<ML.Result>();
+                    readTask.Wait();
+                    result = readTask.Result;
+                }
+                else
+                {
+                    result.Correct = false;
+                    result.ErrorMessage = "Error al consultar usuario";
+                }
+            }
+
+            return result;
+        }
+
+
+
+
+
     }
 }

@@ -21,9 +21,7 @@ namespace DL
         public string? FechaNacimiento { get; set; }
         public string? CURP { get; set; }
         public int? IdRol { get; set; }
-        public string? Descripcion { get; set; }
         public byte[]? Imagen { get; set; }
-        public bool Estatus { get; set; }
         public string? Calle { get; set; }
         public string? NumeroInterior { get; set; }
         public string? NumeroExterior { get; set; }

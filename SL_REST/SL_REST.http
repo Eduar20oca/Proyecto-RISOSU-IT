@@ -1,0 +1,6 @@
+@SL_REST_HostAddress = http://localhost:5080
+
+GET {{SL_REST_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

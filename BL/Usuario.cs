@@ -206,7 +206,7 @@ namespace BL
 
             try
             {                
-                    var usuario = _context.UsuarioGetByIDDTO.FromSqlRaw($"UsuarioGetById{IdUsuario}").AsEnumerable().FirstOrDefault();
+                    var usuario = _context.UsuarioGetByIDDTO.FromSqlRaw($"UsuarioGetById '{IdUsuario}'").AsEnumerable().FirstOrDefault();
 
                     if (usuario != null)
                     {
