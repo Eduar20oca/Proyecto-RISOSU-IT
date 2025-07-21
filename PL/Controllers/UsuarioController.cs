@@ -52,8 +52,9 @@ namespace PL.Controllers
             Usuario.ApellidoPaterno = Usuario.ApellidoPaterno ?? "";
             Usuario.ApellidoMaterno = Usuario.ApellidoMaterno ?? "";
 
-            ML.Result result = _usuario.GetAllSPEF(Usuario);
+            //ML.Result result = _usuario.GetAllSPEF(Usuario);
 
+            ML.Result result = GetAllREST();
             if (result.Correct)
             {
                 Usuario.Usuarios = result.Objects;
