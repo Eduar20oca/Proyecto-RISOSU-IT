@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using DL;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -10,9 +11,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<JocampoProgramacionNcapasContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Restaurantes")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Proyecto")));
 
-builder.Services.AddScoped<BL.Usuario>();
+builder.Services.AddScoped<BL.Producto>();
 
 var app = builder.Build();
 

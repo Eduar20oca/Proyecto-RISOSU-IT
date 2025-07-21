@@ -15,6 +15,8 @@ public partial class JocampoProgramacionNcapasContext : DbContext
     {
     }
 
+    public virtual DbSet<Categorium> Categoria { get; set; }
+
     public virtual DbSet<Colonium> Colonia { get; set; }
 
     public virtual DbSet<Direccion> Direccions { get; set; }
@@ -23,16 +25,28 @@ public partial class JocampoProgramacionNcapasContext : DbContext
 
     public virtual DbSet<Municipio> Municipios { get; set; }
 
+    public virtual DbSet<Producto> Productos { get; set; }
+
     public virtual DbSet<Rol> Rols { get; set; }
+
+    public virtual DbSet<SubCategorium> SubCategoria { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     public virtual DbSet<UsuarioGetAllView> UsuarioGetAllViews { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Categorium>(entity =>
+        {
+            entity.HasKey(e => e.IdCategoria).HasName("PK__Categori__A3C02A1053F84CC2");
+
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<Colonium>(entity =>
         {
             entity.HasKey(e => e.IdColonia).HasName("PK__Colonia__A1580F6608536544");
@@ -103,6 +117,23 @@ public partial class JocampoProgramacionNcapasContext : DbContext
                 .HasConstraintName("FK_Estado");
         });
 
+        modelBuilder.Entity<Producto>(entity =>
+        {
+            entity.HasKey(e => e.IdProducto).HasName("PK__Producto__0988921024FFD804");
+
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Precio).HasColumnType("decimal(18, 0)");
+
+            entity.HasOne(d => d.IdSubCategoriaNavigation).WithMany(p => p.Productos)
+                .HasForeignKey(d => d.IdSubCategoria)
+                .HasConstraintName("FK_Productos");
+        });
+
         modelBuilder.Entity<Rol>(entity =>
         {
             entity.HasKey(e => e.IdRol).HasName("PK__Rol__2A49584C0D5DF071");
@@ -112,6 +143,19 @@ public partial class JocampoProgramacionNcapasContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<SubCategorium>(entity =>
+        {
+            entity.HasKey(e => e.IdSubCategoria).HasName("PK__SubCateg__0A1EFFE5CF298FBB");
+
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdCategoriaNavigation).WithMany(p => p.SubCategoria)
+                .HasForeignKey(d => d.IdCategoria)
+                .HasConstraintName("FK_Categoria");
         });
 
         modelBuilder.Entity<Usuario>(entity =>
