@@ -30,6 +30,7 @@ public partial class JocampoProgramacionNcapasContext : DbContext
     public virtual DbSet<Rol> Rols { get; set; }
 
     public virtual DbSet<SubCategorium> SubCategoria { get; set; }
+    public virtual DbSet<GetProductoByIdSubCategoriaDTO> GetProductoByIdSubCategoriaDTO { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
@@ -143,6 +144,11 @@ public partial class JocampoProgramacionNcapasContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<GetProductoByIdSubCategoriaDTO>(entity =>
+        {
+            entity.HasNoKey();
         });
 
         modelBuilder.Entity<SubCategorium>(entity =>

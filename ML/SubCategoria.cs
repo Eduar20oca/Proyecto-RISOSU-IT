@@ -10,6 +10,7 @@ namespace ML
     {
         public int IdSubCategoria { get; set; }
         public string? Nombre { get; set; }
+        public List<object> SubCategorias { get; set; }
         public ML.Categoria? Categoria { get; set; }
     }
 }
