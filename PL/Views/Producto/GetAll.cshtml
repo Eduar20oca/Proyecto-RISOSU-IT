@@ -1,0 +1,109 @@
+﻿@model ML.Producto
+
+@{
+}
+
+
+<h2> Productos</h2>
+<h5>Buscar Por Categoria</h5>
+
+
+<div class="container">
+    <div class="row align-items-end">
+        <div class="col-4">
+            @Html.LabelFor(Model => Model.SubCategoria.Categoria)
+            @Html.DropDownListFor(Model => Model.SubCategoria.Categoria.IdCategoria, new SelectList(Model.SubCategoria.Categoria.Categorias, "IdCategoria", "Nombre"), "Selecciona una Categoria", new { @class = "form-control", onchange = "FillSubCategorias(this)" })
+        </div>
+
+        @{
+            var subCategorias = Model.SubCategoria.SubCategorias ?? new List<object>();
+            var SubCategoriaSeleccionada = Model.SubCategoria.IdSubCategoria;
+        }
+
+        <div class="col-4">
+            @Html.LabelFor(Model => Model.SubCategoria)
+            @Html.DropDownListFor(Model => Model.SubCategoria.IdSubCategoria, new SelectList(subCategorias, "IdSubCategoria", "Nombre", SubCategoriaSeleccionada), "Selecciona una SubCategoria", new { @class = "form-control", id = "DDLSubCategorias" })
+        </div>
+        <div class="col-4">
+            <button class="btn btn-success" onclick="Productos()">Buscar Productos</button>
+            <a class="btn btn-danger" asp-controller="Producto" asp-action="GetAll">Cancelar</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <hr />
+    <div class="row form-group">
+        <div class="col text-end">
+            <a href="@Url.Action("Form","Producto")" class="btn btn-success">Añadir</a>
+        </div>
+        <div>
+            <br />
+            <div class="card-group col" id="CardGroup">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <script>
+
+        function FillSubCategorias(DDL) {
+            var IdCategoria = DDL.value;
+
+            $.ajax({
+                url: '@Url.Action("GetByIdCategoria", "Producto")',
+                dataType: 'json',
+                method: 'GET',
+                data: { IdCategoria },
+                success: function (resultSubCategoria) {
+                    if (resultSubCategoria.correct) {
+                        $('#DDLSubCategorias').empty()
+                        $('#DDLSubCategorias').append('<option value =""> Selecciona una SubCategoria</option>')
+
+                        $.each(resultSubCategoria.objects, function (i, SubCategoria) {
+                            $('#DDLSubCategorias').append('<option value="' + SubCategoria.idSubCategoria + '" > ' + SubCategoria.nombre + '</option>')
+                        })
+                    }
+                },
+                error: function (ex) {
+                    console.log(ex)
+                }
+            })
+        }
+
+        function Productos() {
+            var IdSubCategoria = $('#DDLSubCategorias').val();
+
+            console.log(IdSubCategoria);
+
+            $.ajax({
+                url: '@Url.Action("GetByIdSubcategoria", "Producto")',
+                dataType: 'json',
+                method: 'GET',
+                data: { IdSubCategoria },
+                success: function (resultProductos) {
+                    if (resultProductos.correct) {
+                        $.each(resultProductos.objects, function (i, Producto) {
+                            var card = `
+                                                <div class="card">
+                                                <img class="card-img-top" src=${Producto.imagen} alt="Card image cap">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">${Producto.nombre}</h5>
+                                                    <h5 class="card-title">${Producto.subCategoria.nombre}</h5>
+                                                    <p class="card-text"><b>Precio:</b> ${Producto.precio}</p>
+                                                    <p class="card-text"><b>Categoria:</b>${Producto.descripcion}</p>
+                                                    <p class="card-text">${Producto.subCategoria.categoria.nombre}</p>
+                                                    <a href="/Producto/Update" class="btn btn-warning">Editar</a>
+                                                    <a href="/Producto/Delete" class="btn btn-danger">Eliminar</a>
+                                                    </div>
+                                                </div>`;
+                            $("#CardGroup").append(card);
+                        })
+                    }
+                },
+            })
+        }
+
+
+    </script>

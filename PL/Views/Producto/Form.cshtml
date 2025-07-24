@@ -1,0 +1,37 @@
+﻿@model ML.Producto
+    
+@{
+}
+
+
+<h2 class="text-center">Agregar Producto</h2>
+
+
+<div class="container">
+    <div class="row">
+        @using (Html.BeginForm("Form", "Producto", FormMethod.Post))
+        {
+            
+            @Html.TextBoxFor(Model => Model.IdProducto , new { @class = "form-control" , HiddenInputAttribute = true });
+
+            @Html.LabelFor(model => model.Nombre)
+            @Html.TextBoxFor(Model => Model.Nombre , new { @class="form-control"});
+
+            @Html.LabelFor(model => model.Descripcion)
+            @Html.TextBoxFor(Model => Model.Descripcion, new { @class = "form-control" });
+
+
+            @Html.LabelFor(model => model.Precio)
+            @Html.TextBoxFor(Model => Model.Precio, new { @class = "form-control" });
+
+            @Html.LabelFor(model => model.Imagen)
+            <input type="file" class="form-control" />
+
+            @Html.LabelFor(Model => Model.SubCategoria)
+            @Html.DropDownListFor(Model => Model.SubCategoria.IdSubCategoria , new SelectList(string.Empty));
+
+        }
+
+
+    </div>
+</div>

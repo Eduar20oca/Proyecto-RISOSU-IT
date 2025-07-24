@@ -31,7 +31,8 @@ public partial class JocampoProgramacionNcapasContext : DbContext
 
     public virtual DbSet<SubCategorium> SubCategoria { get; set; }
     public virtual DbSet<GetProductoByIdSubCategoriaDTO> GetProductoByIdSubCategoriaDTO { get; set; }
-
+    public virtual DbSet<GetByIdCategoriaDTO> GetByIdCategoriaDTO { get; set; }
+        
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     public virtual DbSet<UsuarioGetAllView> UsuarioGetAllViews { get; set; }
@@ -147,6 +148,11 @@ public partial class JocampoProgramacionNcapasContext : DbContext
         });
 
         modelBuilder.Entity<GetProductoByIdSubCategoriaDTO>(entity =>
+        {
+            entity.HasNoKey();
+        });
+
+        modelBuilder.Entity<GetByIdCategoriaDTO>(entity =>
         {
             entity.HasNoKey();
         });

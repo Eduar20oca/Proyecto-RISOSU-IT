@@ -14,6 +14,8 @@ builder.Services.AddDbContext<JocampoProgramacionNcapasContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Proyecto")));
 
 builder.Services.AddScoped<BL.Producto>();
+builder.Services.AddScoped<BL.Categoria>();
+builder.Services.AddScoped<BL.SubCategoria>();
 
 var app = builder.Build();
 

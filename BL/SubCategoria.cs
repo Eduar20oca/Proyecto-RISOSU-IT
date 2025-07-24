@@ -22,12 +22,12 @@ namespace BL
 
             try
             {
-                var query = _context.SubCategoria.FromSqlRaw($"SubCategoriaByIdCategoria '{IdCategoria}'").ToList();
+                var query = _context.GetByIdCategoriaDTO.FromSqlRaw($"SubCategoriaByIdCategoria '{IdCategoria}'").ToList();
 
                 if(query.Count > 0)
                 {
 
-                    result.Object = new List<object>();
+                    result.Objects = new List<object>();
 
                     foreach(var item in query)
                     {
