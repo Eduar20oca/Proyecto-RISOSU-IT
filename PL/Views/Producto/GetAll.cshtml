@@ -84,6 +84,8 @@
                 data: { IdSubCategoria },
                 success: function (resultProductos) {
                     if (resultProductos.correct) {
+                        $('#CardGroup').empty();
+                        
                         $.each(resultProductos.objects, function (i, Producto) {
 
                             let img = `data:image/jpeg;base64,${Producto.base64}`;
