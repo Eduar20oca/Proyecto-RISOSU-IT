@@ -85,18 +85,22 @@
                 success: function (resultProductos) {
                     if (resultProductos.correct) {
                         $.each(resultProductos.objects, function (i, Producto) {
+
+                            let img = `data:image/jpeg;base64,${Producto.base64}`;
                             var card = `
                                                 <div class="card">
-                                                <img class="card-img-top" src=${Producto.imagen} alt="Card image cap">
+                                                <div class="text-center">
+                                                <img class="card-img-top" src=${img} alt="Card image cap" style= "width:350px">
+                                                </div>
                                                 <div class="card-body">
-                                                    <h5 class="card-title">${Producto.nombre}</h5>
-                                                    <h5 class="card-title">${Producto.subCategoria.nombre}</h5>
-                                                    <p class="card-text"><b>Precio:</b> ${Producto.precio}</p>
-                                                    <p class="card-text"><b>Categoria:</b>${Producto.descripcion}</p>
-                                                    <p class="card-text">${Producto.subCategoria.categoria.nombre}</p>
-                                                    <a href="/Producto/Update" class="btn btn-warning">Editar</a>
-                                                    <a href="/Producto/Delete" class="btn btn-danger">Eliminar</a>
-                                                    </div>
+                                                <h5 class="card-title">${Producto.nombre}</h5>
+                                                <p class="card-text"><small class="text-body-secondary"> ${Producto.subCategoria.nombre}</small></p>
+                                                <p class="card-text"><b>Precio:</b> ${Producto.precio}</p>
+                                                <p class="card-text"><b>Categoria:</b> ${Producto.subCategoria.categoria.nombre}</p>
+                                                <p class="card-text">${Producto.descripcion}</p>
+                                                <a href="/Producto/Form?IdProducto=${Producto.idProducto}" class="btn btn-warning">Editar</a>
+                                                <a href="/Producto/Delete?IdProducto=${Producto.idProducto}" class="btn btn-danger">Eliminar</a>
+                                                </div>
                                                 </div>`;
                             $("#CardGroup").append(card);
                         })

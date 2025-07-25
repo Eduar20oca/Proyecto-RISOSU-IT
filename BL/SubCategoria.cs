@@ -51,6 +51,45 @@ namespace BL
         }
 
 
+        public ML.Result GetAll()
+        {
+
+            ML.Result result = new ML.Result();
+
+            try
+            {
+
+                var query = _context.GetByIdCategoriaDTO.FromSqlRaw("SubCategoriaGetAll").ToList();
+
+                if(query.Count > 0)
+                {
+                    result.Objects = new List<object>();
+
+                    foreach(var item in query)
+                    {
+                        ML.SubCategoria subCategoria = new ML.SubCategoria();
+
+                        subCategoria.IdSubCategoria = item.IdSubCategoria;
+                        subCategoria.Nombre = item.Nombre;
+
+                        result.Objects.Add(subCategoria);
+                    }
+
+                    result.Correct = true;
+                }
+               
+            }
+            catch(Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.ex = ex;
+            }
+
+            return result;
+        }
+
+
 
     }
 }

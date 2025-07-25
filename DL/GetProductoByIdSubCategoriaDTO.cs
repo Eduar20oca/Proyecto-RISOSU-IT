@@ -17,8 +17,8 @@ namespace DL
 
         public decimal? Precio { get; set; }
 
-        public byte[]? Imagen { get; set; }
-
+        public byte[]? Imagen { get; set; } 
+        public int IdSubCategoria { get; set; }
         public string? NombreSubCategoria { get; set; }
         public string? NombreCategoria { get; set; }
 

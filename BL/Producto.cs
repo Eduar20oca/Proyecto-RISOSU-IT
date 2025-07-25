@@ -1,5 +1,7 @@
 ﻿using DL;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace BL
 {
@@ -36,8 +38,14 @@ namespace BL
                         Producto.Descripcion = item.Descripcion;
                         Producto.Precio = item.Precio;
                         Producto.Imagen = item.Imagen;
+                        Producto.SubCategoria.IdSubCategoria = item.IdSubCategoria;
                         Producto.SubCategoria.Nombre = item.NombreSubCategoria;
                         Producto.SubCategoria.Categoria.Nombre = item.NombreCategoria;
+                        if(Producto.Imagen != null)
+                        {
+                            Producto.Base64 = Convert.ToBase64String(Producto.Imagen);
+                        }                       
+                                               
 
                         result.Objects.Add(Producto);
                     }
@@ -65,8 +73,17 @@ namespace BL
 
             try
             {
+                var foto = new SqlParameter("@Imagen", SqlDbType.VarBinary);
+                if (producto.Imagen != null)
+                {
+                    foto.Value = producto.Imagen;
+                }
+                else
+                {
+                    foto.Value = DBNull.Value;
+                }
 
-                var filasAfectadas = _context.Database.ExecuteSqlRaw($"ProductoAdd '{producto.Nombre}' , '{producto.Descripcion}', '{producto.Precio}' , {producto.Imagen}, '{producto.SubCategoria.IdSubCategoria}'");
+                var filasAfectadas = _context.Database.ExecuteSqlRaw($"ProductoAdd '{producto.Nombre}','{producto.Descripcion}','{producto.Precio}', @Imagen ,'{producto.SubCategoria.IdSubCategoria}'", foto);
 
                 if(filasAfectadas > 0)
                 {
@@ -117,13 +134,14 @@ namespace BL
             try
             {
 
-                var query = _context.Productos.FromSqlRaw($"ProductoGetById '{IdProducto}'").FirstOrDefault();
+                var query = _context.Productos.FromSqlRaw($"ProductoGetById '{IdProducto}'").AsEnumerable().FirstOrDefault();
 
                 if(query != null)
                 {
                     ML.Producto producto = new ML.Producto();
                     producto.SubCategoria = new ML.SubCategoria();
 
+                    producto.IdProducto = query.IdProducto;
                     producto.Nombre = query.Nombre;
                     producto.Descripcion = query.Descripcion;
                     producto.Precio = query.Precio;
@@ -152,8 +170,18 @@ namespace BL
 
             try
             {
+                var foto = new SqlParameter("@Imagen", SqlDbType.VarBinary);
+                if (producto.Imagen != null)
+                {
+                    foto.Value = producto.Imagen;
+                }
+                else
+                {
+                    foto.Value = DBNull.Value;
+                }
 
-                var filasAfectadas = _context.Database.ExecuteSqlRaw($"ProductoUpdate '{producto.IdProducto}' , '{producto.Nombre}', '{producto.Descripcion}', '{producto.Precio}', '{producto.Imagen}', '{producto.SubCategoria.IdSubCategoria}' ");
+
+                var filasAfectadas = _context.Database.ExecuteSqlRaw($"ProductoUpdate '{producto.IdProducto}' , '{producto.Nombre}', '{producto.Descripcion}', '{producto.Precio}', @Imagen , '{producto.SubCategoria.IdSubCategoria}'" , foto);
 
 
                 if(filasAfectadas > 0)

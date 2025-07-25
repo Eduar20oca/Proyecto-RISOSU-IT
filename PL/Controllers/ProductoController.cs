@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PL.Controllers
 {
@@ -37,21 +38,51 @@ namespace PL.Controllers
         public IActionResult Form(int IdProducto)
         {
             ML.Producto producto = new ML.Producto();
+            producto.SubCategoria = new ML.SubCategoria();
+
             if (IdProducto > 0)
             {                
                 ML.Result result = _Producto.GetById(IdProducto);
 
-                producto = (ML.Producto)result.Object;
+                if (result.Correct)
+                {
+                    producto = (ML.Producto)result.Object;
+                    
+                    ML.Result resultSubCategoria = _SubCategoria.GetAll();
+
+                    if (resultSubCategoria.Correct)
+                    {
+                        producto.SubCategoria.SubCategorias = resultSubCategoria.Objects;
+                    }
+                }
+            }
+
+            ML.Result resultSubCategoria2 = _SubCategoria.GetAll();
+
+            if (resultSubCategoria2.Correct)
+            {
+                producto.SubCategoria.SubCategorias = resultSubCategoria2.Objects;
             }
 
             return View(producto);
         }
 
         [HttpPost]
-        public IActionResult Form(ML.Producto producto)
+        public IActionResult Form(ML.Producto producto, IFormFile Imagen)
         {
 
-            if(producto.IdProducto > 0)
+            if (Imagen != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    
+                    Imagen.OpenReadStream().CopyTo(ms);
+                    
+                    producto.Imagen = ms.ToArray();
+                }
+            }
+
+            if (producto.IdProducto > 0)
             {
                 _Producto.Update(producto);
             }
@@ -60,8 +91,15 @@ namespace PL.Controllers
                 _Producto.Add(producto);
             }
 
-            return View("GetAll");
+            return RedirectToAction("GetAll");
+        }
 
+        [HttpPost]
+        public IActionResult Delete(int IdProducto)
+        {
+            ML.Result result = _Producto.Delete(IdProducto);
+
+            return RedirectToAction("GetAll");
         }
 
         [HttpGet]
@@ -69,8 +107,9 @@ namespace PL.Controllers
         {
             ML.Result resultProductos = _Producto.GetByIdSubCategoria(IdSubCategoria);
 
-            if (resultProductos.Correct)
+            if (resultProductos.Correct)        
             {
+
                 return Json(resultProductos);
             }
             else

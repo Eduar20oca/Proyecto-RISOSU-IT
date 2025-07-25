@@ -1,5 +1,5 @@
 ﻿@model ML.Producto
-    
+
 @{
 }
 
@@ -8,30 +8,79 @@
 
 
 <div class="container">
-    <div class="row">
-        @using (Html.BeginForm("Form", "Producto", FormMethod.Post))
-        {
-            
-            @Html.TextBoxFor(Model => Model.IdProducto , new { @class = "form-control" , HiddenInputAttribute = true });
 
-            @Html.LabelFor(model => model.Nombre)
-            @Html.TextBoxFor(Model => Model.Nombre , new { @class="form-control"});
+    @using (Html.BeginForm("Form", "Producto", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="row justify-content-center">
+            <div class="col-4 ">
+                @Html.TextBoxFor(Model => Model.IdProducto, new { @class = "form-control", Hidden = true })
 
-            @Html.LabelFor(model => model.Descripcion)
-            @Html.TextBoxFor(Model => Model.Descripcion, new { @class = "form-control" });
+                @Html.LabelFor(model => model.Nombre)
+                @Html.TextBoxFor(Model => Model.Nombre, new { @class = "form-control" })
+
+                @Html.LabelFor(model => model.Descripcion)
+                @Html.TextBoxFor(Model => Model.Descripcion, new { @class = "form-control" })
+            </div>
+
+            <div class="col-4 ">
+                @Html.LabelFor(model => model.Precio)
+                @Html.TextBoxFor(Model => Model.Precio, new { @class = "form-control", type = "number", min = "0" })
+
+                @Html.LabelFor(model => model.Imagen)
+                <input type="file" id="Imagen" name="Imagen" class="form-control"onchange="CargarImage(event)" />
+
+                <br />
+                @Html.LabelFor(Model => Model.SubCategoria)
+                @Html.DropDownListFor(Model => Model.SubCategoria.IdSubCategoria, new SelectList(Model.SubCategoria.SubCategorias, "IdSubCategoria", "Nombre"), "Selecciona una SubCategoria", new { @class = "form-control" })
+                <br/>            
+            </div>
+
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-success"> Agregar </button>
+            </div>
+        </div>
+    }
+</div>
 
 
-            @Html.LabelFor(model => model.Precio)
-            @Html.TextBoxFor(Model => Model.Precio, new { @class = "form-control" });
+<script>
 
-            @Html.LabelFor(model => model.Imagen)
-            <input type="file" class="form-control" />
+    var CargarImage = function (input) {
+        var img = input.target.files[0]
 
-            @Html.LabelFor(Model => Model.SubCategoria)
-            @Html.DropDownListFor(Model => Model.SubCategoria.IdSubCategoria , new SelectList(string.Empty));
+        var ImgName = img.name;
 
+        if (Validar(ImgName)) {
+            alert("Imagen Cargada Correctamente")
+        }
+        else {
+            return null
+        }
+        var reader = new FileReader()
+        reader.onload = function () {
+            var output = $('#ImgInput')[0]
+            console.log(output)
+            output.src = reader.result
+        }
+        reader.readAsDataURL(img)
+    }
+
+    function Validar(imgName) {
+
+        let extensions = ["png", "jpg", "jpeg"];
+
+        if (imgName == null) {
+            alert("No se Subio el Archivo");
+            return false;
         }
 
+        let imgExtension = imgName.split('.').pop().toLowerCase();
 
-    </div>
-</div>
+        if (!extensions.includes(imgExtension)) {
+            alert("No es una Extension Valida")
+            return false;
+        }
+        return true;
+    }
+
+</script>
