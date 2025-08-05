@@ -290,6 +290,44 @@ namespace BL
             return result;
         }
 
+        public ML.Result Login(ML.Login Login)
+        {
+            ML.Result result = new ML.Result();
+
+            try
+            {
+
+                var query = _context.UsuarioLoginDTO.FromSqlRaw($"UsuarioLogin '{Login.Correo}' , '{Login.Contraseña}'").AsEnumerable().SingleOrDefault();
+
+                if(query != null)
+                {
+                    ML.Usuario usuario = new ML.Usuario();
+                    usuario.Rol = new ML.Rol();
+
+                    usuario.Nombre = query.UsuarioNombre;
+                    usuario.UserName = query.UserName;
+                    usuario.Rol.Descripcion = query.RolNombre;
+
+                    result.Object = usuario;
+                    result.Correct = true;
+                }
+                else
+                {
+                    result.Correct = false;
+                    result.ErrorMessage = "Correo o contraseña invalidos";
+                }
+
+            }
+            catch(Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+
+            return result;
+        }
+
     }
 
 

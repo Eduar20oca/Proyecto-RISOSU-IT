@@ -31,7 +31,8 @@ public partial class JocampoProgramacionNcapasContext : DbContext
     public virtual DbSet<UsuarioGetByIDDTO> UsuarioGetByIDDTO { get; set; }
     public virtual DbSet<GetByIdEstadoDTO> GetByIdEstadoDTO { get; set; }
     public virtual DbSet<GetByIdMunicipioDTO> GetByIdMunicipioDTO { get; set; }
-
+    public virtual DbSet<UsuarioLoginDTO> UsuarioLoginDTO { get; set; }
+        
     public virtual DbSet<UsuarioGetAllView> UsuarioGetAllViews { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
@@ -54,6 +55,12 @@ public partial class JocampoProgramacionNcapasContext : DbContext
                 .HasForeignKey(d => d.IdMunicipio)
                 .HasConstraintName("FK_Municipio");
         });
+
+        modelBuilder.Entity<UsuarioLoginDTO>(entity =>
+        {
+            entity.HasNoKey();
+        });
+        
 
         modelBuilder.Entity<Direccion>(entity =>
         {

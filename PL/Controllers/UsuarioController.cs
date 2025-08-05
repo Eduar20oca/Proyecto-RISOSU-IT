@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
@@ -22,6 +24,7 @@ namespace PL.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult GetAll()
         {
             ML.Usuario usuario = new ML.Usuario();
@@ -43,8 +46,9 @@ namespace PL.Controllers
 
             return View(usuario);
         }
-
+                
         [HttpPost]
+        [Authorize]
         public IActionResult GetAll(ML.Usuario Usuario)
         {
 
@@ -244,7 +248,7 @@ namespace PL.Controllers
                 {
                     var readTask = resultado.Content.ReadAsAsync<ML.Result>();
                     result.Objects = new List<object>();
-                    
+
                     foreach (var item in readTask.Result.Objects)
                     {
                         ML.Usuario usuarioitem = Newtonsoft.Json.JsonConvert.DeserializeObject<ML.Usuario>(item.ToString());
@@ -331,7 +335,7 @@ namespace PL.Controllers
         }
 
         [NonAction]
-        private ML.Result GetByIdREST(int? IdUsuario) 
+        private ML.Result GetByIdREST(int? IdUsuario)
         {
             ML.Result result = new ML.Result();
 
@@ -361,6 +365,58 @@ namespace PL.Controllers
 
             return result;
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult LoginUsuario()
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult LoginUsuario([FromBody]ML.Login Login)
+        {
+
+            ML.Result result = new ML.Result();
+
+            using(var client = new HttpClient())
+            {
+
+                string uri = "http://localhost:5080/api/IniciarSesion";
+
+                client.BaseAddress = new Uri(uri);
+
+                var postTask = client.PostAsJsonAsync<ML.Login>("", Login);
+                postTask.Wait();
+
+                var respuesta = postTask.Result;
+
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    var readTask = respuesta.Content.ReadAsStringAsync();
+                    readTask.Wait();
+
+                    string token = readTask.Result;
+
+                    HttpContext.Response.Cookies.Append("session", token, new Microsoft.AspNetCore.Http.CookieOptions
+                    { Expires = DateTime.Now.AddMinutes(5) });
+
+                    return RedirectToAction("Index", "Home");
+                }         
+
+            }
+            return View("LoginUsuario");
+        }
+
+        [NonAction]
+        public IActionResult AccesoDenegado()
+        {
+
+            return View();
+        }
+
 
 
 

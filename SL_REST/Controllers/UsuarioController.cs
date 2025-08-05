@@ -1,8 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
+using System.Runtime.Remoting;
+using ML;
+using BL;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SL_REST.Controllers
 {
-    public class UsuarioController : Controller
+
+    [ApiController]
+    [Route("api")]
+    public class UsuarioController : ControllerBase
     {
 
         private readonly BL.Usuario _usuario;
@@ -14,6 +26,7 @@ namespace SL_REST.Controllers
 
         [HttpGet]
         [Route("GetAll")]
+        [Authorize(Roles = "Lector")]
         public IActionResult GetAll()
         {
             ML.Usuario usuario = new ML.Usuario();
@@ -104,6 +117,52 @@ namespace SL_REST.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("IniciarSesion")]
+        public IActionResult Login([FromBody]ML.Login Login)
+        {
+            ML.Result result = _usuario.Login(Login);
 
+            if (result.Correct)
+            {
+                ML.Usuario usuario = new ML.Usuario();
+                usuario = (ML.Usuario)result.Object;
+
+                string token = GenerateJwtToken(usuario);
+
+                return Ok(token);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+
+        }
+
+        private string GenerateJwtToken(ML.Usuario usuario)
+        {
+            var claims = new[]
+            {
+            new Claim(ClaimTypes.Role, usuario.Rol.Descripcion),
+            new Claim(ClaimTypes.Name, usuario.Nombre),
+            
+        };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("fdio15asas4rwey7856dfgsdfwe757sd5das5asd"));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: "yourdomain.com",
+                audience: "yourdomain.com",
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
     }
+
+
+
 }
+

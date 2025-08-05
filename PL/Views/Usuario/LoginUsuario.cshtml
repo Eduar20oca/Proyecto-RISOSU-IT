@@ -1,0 +1,72 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="wrapper">
+            <div class="title">
+                Login Form
+            </div>
+            <form action="#">
+                <div class="field">
+                    <input type="text" id="email" required>
+                    <label>Email</label>
+                </div>
+                <div class="field">
+                    <input type="password" id="password" required>
+                    <label>Password</label>
+                </div>
+                <div class="content">
+                    <div class="checkbox">
+                        <input type="checkbox" id="remember-me">
+                        <label for="remember-me">Remember me</label>
+                    </div>
+                    <div class="pass-link">
+                        <a href="#">Forgot password?</a>
+                    </div>
+                </div>
+                <div class="field">
+                    <input type="submit" onclick="Login(event)" value="Login">
+                </div>
+                <div class="signup-link">
+                    Not a member? <a href="#">Signup now</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="~/Scripts/jquery-3.7.0.min.js"></script>
+
+<script>
+
+    function Login(event) {
+        event.preventDefault();
+
+        var Email= $('#email').val();
+        var Password= $('#password').val();
+
+        var login = {
+            Correo: Email,
+            Contraseña: Password
+        };
+
+        $.ajax({
+            url: '@Url.Action("LoginUsuario", "Usuario")',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(login),            
+        })
+    }
+
+</script>
+
+
+
+
