@@ -16,6 +16,7 @@ builder.Services.AddDbContext<JocampoProgramacionNcapasContext>(options =>
 builder.Services.AddScoped<BL.Producto>();
 builder.Services.AddScoped<BL.Categoria>();
 builder.Services.AddScoped<BL.SubCategoria>();
+builder.Services.AddScoped<BL.Sucursal>();
 
 var app = builder.Build();
 

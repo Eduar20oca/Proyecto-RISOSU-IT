@@ -1,0 +1,24 @@
+﻿@model ML.Sucursal
+@{
+}
+
+<h2>GetAll</h2>
+<h3>Producto</h3>
+
+<div class="container">
+    <div class="row">
+        <label>Selecciona una Sucursal para consultar los productos</label>
+        <div class="col-4">
+        @Html.DropDownListFor(Model => Model.IdSucursal , new SelectList(Model.Sucursales , "IdSucursal" , "Nombre" ), "Selecciona una Sucursal" , new {  @class = "form-control"})
+        </div>
+        <div class="col-4">
+        <button class="btn btn-success" onchange="fillProductos()">Buscar</button>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+</script>
