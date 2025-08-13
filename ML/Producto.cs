@@ -14,7 +14,7 @@ namespace ML
         public string? Descripcion { get; set; }
         public decimal? Precio { get; set; }
         public byte[]? Imagen { get; set; }
-        public string Base64 { get; set; }
+        public string? Base64 { get; set; }
         public ML.SubCategoria? SubCategoria { get; set; }
 
     }

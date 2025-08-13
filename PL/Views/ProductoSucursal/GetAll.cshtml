@@ -1,18 +1,57 @@
-﻿@model ML.Sucursal
-@{
-}
+﻿@model ML.ProductoSucursal
+
 
 <h2>GetAll</h2>
 <h3>Producto</h3>
 
-<div class="container">
-    <div class="row">
-        <label>Selecciona una Sucursal para consultar los productos</label>
-        <div class="col-4">
-        @Html.DropDownListFor(Model => Model.IdSucursal , new SelectList(Model.Sucursales , "IdSucursal" , "Nombre" ), "Selecciona una Sucursal" , new {  @class = "form-control"})
+@using (Html.BeginForm("GetAll", "ProductoSucursal", FormMethod.Post))
+{
+    <div class="container">
+        <div class="row">
+            <label>Selecciona una Sucursal para consultar los productos</label>
+            <div class="col-4">
+                @Html.DropDownListFor(Model => Model.Sucursal.IdSucursal, new SelectList(Model.Sucursal.Sucursales, "IdSucursal", "Nombre"), "Selecciona una Sucursal", new { @class = "form-control", id = "DDL" })
+            </div>
+            <div class="col-4">
+                <button class="btn btn-success">Buscar</button>
+            </div>
         </div>
-        <div class="col-4">
-        <button class="btn btn-success" onchange="fillProductos()">Buscar</button>
+    </div>
+}
+
+
+
+<div class="container">
+    <hr />
+    <h2>Productos que pertenecen a la Sucursal</h2>
+    <div class="row">
+        <div class="table-responsive">
+            <table class="table col-12">
+                <thead class="text-center">
+                    <tr>
+                        <th>Editar</th>
+                        <th>Imagen</th>
+                        <th>Producto</th>
+                        <th>Sucursal</th>
+                        <th>Stock</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        @foreach (ML.ProductoSucursal item in Model.ProductosSucursales ?? new List<object>())
+                        {
+                           <tr class="text-center">
+                            <td><button class="btn btn-warning" id="btnEdt" onclick="Editar(@item.IdProductoSucursal)">Editar</button></td>
+                            <td><img src="data:image/jpeg;base64,@item.Producto.Base64" style= "width:100px"></td>
+                            <td>@item.Producto.Nombre</td>
+                            <td>@item.Sucursal.Nombre</td>
+                            <td><input id="@item.IdProductoSucursal" class="form-control" style= "width:200px" disabled type="int" min="0" value="@item.Stock"/></td>
+                            <td> <a href="@Url.Action("UpdateStock" , "ProductoSucursal") , new {@item.IdProductoSucursal}" class="btn btn-primary">Guardar</a>
+                            <button class="btn btn-danger"> <i class="bi bi-trash"></i>  </button></td>
+                          </tr>
+                        }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -20,5 +59,13 @@
 
 
 <script>
+
+    function Editar(id){
+
+        var edt = document.getElementById(id);      
+        edt.disabled = false;
+
+        var btnedt = $("#btnEdt").prop("disabled" ,true);
+    }
 
 </script>
