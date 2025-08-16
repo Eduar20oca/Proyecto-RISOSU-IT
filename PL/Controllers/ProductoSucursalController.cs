@@ -4,6 +4,7 @@ using ML;
 using System;
 using System.Net;
 using System.Net.Mail;
+using System.Net.Mime;
 using System.Xml.Schema;
 
 namespace PL.Controllers
@@ -87,14 +88,21 @@ namespace PL.Controllers
 
                 string body = "";
                 string path = Path.Combine(_env.WebRootPath, "Content", "correo.html");
+                string imgpath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Content", "imagen.png");
 
                 StreamReader lector = new StreamReader(path);
 
-                body = lector.ReadToEnd();
-                body = body.Replace("{{Imagen}}", "https://media.istockphoto.com/id/1201223949/es/vector/flecha-al-icono-de-l%C3%ADnea-izquierda-y-derecha-aislado-sobre-fondo-blanco-ilustraci%C3%B3n-vectorial.jpg?s=612x612&w=0&k=20&c=V6RlhNeD5jrXK_lYNvUrfvUY1pGV_WU-RggoUdoalRo=");
+                AlternateView vistaHtml = AlternateView.CreateAlternateViewFromString(body, null, MediaTypeNames.Text.Html);
+                LinkedResource imagen = new LinkedResource(imgpath, MediaTypeNames.Image.Jpeg)
+                {
+                    ContentId = "Imagen",
+                    TransferEncoding = TransferEncoding.Base64
+                };
+
+                vistaHtml.LinkedResources.Add(imagen);
+
+                body = lector.ReadToEnd();                
                 body = body.Replace("{{Producto}}", productoSucursal.Producto.Nombre);
-                body = body.Replace("{{StockAntes}}", $"{productoSucursal.Stock}");
-                body = body.Replace("{{StockActual}}", productoSucursal.Stock.ToString());
                 body = body.Replace("{{Accion}}", Url.Action("GetAll", "ProductoSucursal"));
 
                 var smtpClient = new SmtpClient("smtp.gmail.com")
