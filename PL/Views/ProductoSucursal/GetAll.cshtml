@@ -41,12 +41,12 @@
                         @foreach (ML.ProductoSucursal item in Model.ProductosSucursales ?? new List<object>())
                         {
                            <tr class="text-center">
-                            <td><button class="btn btn-warning" id="btnEdt" onclick="Editar(@item.IdProductoSucursal)">Editar</button></td>
+                            <td><button class="btn btn-warning btn-editar" id="btnEdt">Editar</button></td>
                             <td><img src="data:image/jpeg;base64,@item.Producto.Base64" style= "width:100px"></td>
                             <td>@item.Producto.Nombre</td>
                             <td>@item.Sucursal.Nombre</td>
-                            <td><input id="@item.IdProductoSucursal" class="form-control" style= "width:200px" disabled type="int" min="0" value="@item.Stock"/></td>
-                            <td> <a href="@Url.Action("UpdateStock" , "ProductoSucursal") , new {@item.IdProductoSucursal}" class="btn btn-primary">Guardar</a>
+                            <td><input id="@item.IdProductoSucursal" class="form-control stock-input" style="width:200px" disabled type="int" min="0" value="@item.Stock" /></td>
+                            <td> <a href="#" class="btn btn-primary" onclick="GuardarStock(@item.IdProductoSucursal, '@item.Producto.Nombre')">Guardar</a>
                             <button class="btn btn-danger"> <i class="bi bi-trash"></i>  </button></td>
                           </tr>
                         }
@@ -57,15 +57,48 @@
 </div>
 
 
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
-    function Editar(id){
+    let filaActiva = null;
 
-        var edt = document.getElementById(id);      
-        edt.disabled = false;
+    $(document).on("click", ".btn-editar", function () {
+        let fila = $(this).closest("tr");  
+        let input = fila.find(".stock-input");
+        let boton = $(this);
 
-        var btnedt = $("#btnEdt").prop("disabled" ,true);
+        
+        if (filaActiva && filaActiva[0] !== fila[0]) {
+            resetFila(filaActiva);
+        }
+
+        // Toggle Editar / Cancelar
+        if (input.prop("disabled")) {
+            input.prop("disabled", false);
+            boton.removeClass("btn-warning").addClass("btn-secondary").text("Cancelar");
+            filaActiva = fila;
+        } else {
+            resetFila(fila);
+            filaActiva = null;
+        }
+    });
+
+    function resetFila(fila) {
+        fila.find(".stock-input").prop("disabled", true);
+        fila.find(".btn-editar").removeClass("btn-secondary").addClass("btn-warning").text("Editar");
     }
+
+
+    function GuardarStock(id, Nombre) {
+        var stock = $("#" + id).val();
+
+        $.ajax({
+            url: '@Url.Action("UpdateStock" , "ProductoSucursal")',
+            type: 'POST',
+            data: {IdProductoSucursal: id, Stock: stock, Nombre: Nombre }, 
+            success: alert("Stock Actualizado")            
+        });
+    }
+
 
 </script>

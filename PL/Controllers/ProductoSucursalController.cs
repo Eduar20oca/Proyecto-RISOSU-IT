@@ -62,23 +62,23 @@ namespace PL.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateStock(int IdProducto, int Stock)
+        public IActionResult UpdateStock(int IdProductoSucursal, int Stock, string Nombre)
         {
 
-            ML.Result result = _Sucursal.UpdateStock(IdProducto, Stock);
+            ML.Result result = _Sucursal.UpdateStock(IdProductoSucursal, Stock);
 
             if (result.Correct)
             {
-
-                RedirectToAction("GetAll");
+                EnviarCorreo(Nombre);
+                return RedirectToAction("GetAll");
             }
 
 
-            return View("GetAll");
+            return RedirectToAction("GetAll");
         }
 
-
-        public IActionResult EnviarCorreo(ML.ProductoSucursal productoSucursal)
+        [HttpPost]
+        public IActionResult EnviarCorreo(string ProductoNombre)
         {
 
             try
@@ -92,18 +92,18 @@ namespace PL.Controllers
 
                 StreamReader lector = new StreamReader(path);
 
+                body = lector.ReadToEnd();                
+                body = body.Replace("{{Producto}}", ProductoNombre);
+                body = body.Replace("{{Accion}}", Url.Action("GetAll", "ProductoSucursal", null, Request.Scheme));
+
                 AlternateView vistaHtml = AlternateView.CreateAlternateViewFromString(body, null, MediaTypeNames.Text.Html);
-                LinkedResource imagen = new LinkedResource(imgpath, MediaTypeNames.Image.Jpeg)
+                LinkedResource imagen = new LinkedResource(imgpath, MediaTypeNames.Image.Png)
                 {
                     ContentId = "Imagen",
                     TransferEncoding = TransferEncoding.Base64
                 };
 
                 vistaHtml.LinkedResources.Add(imagen);
-
-                body = lector.ReadToEnd();                
-                body = body.Replace("{{Producto}}", productoSucursal.Producto.Nombre);
-                body = body.Replace("{{Accion}}", Url.Action("GetAll", "ProductoSucursal"));
 
                 var smtpClient = new SmtpClient("smtp.gmail.com")
                 {
@@ -116,12 +116,12 @@ namespace PL.Controllers
                 var mensaje = new MailMessage
                 {
                     From = new MailAddress(correo, "Jesus"),
-                    Subject = "Asunto",
-                    Body = body,
+                    Subject = "Asunto",                    
                     IsBodyHtml = true
                 };
 
                 mensaje.To.Add("jeocampo01@outlook.com");
+                mensaje.AlternateViews.Add(vistaHtml);
                 smtpClient.Send(mensaje);
 
             }
